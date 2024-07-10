@@ -1,12 +1,14 @@
 package com.chandrika.onlinefood.OnlineFoodBackEnd.Controller;
 
-import java.lang.StackWalker.Option;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -67,7 +69,7 @@ public class RestaurantController {
 	}
 
 	
-	@PostMapping("/Login")
+	@PostMapping("/login")
 	public ResponseEntity<Restaurant> LoginRestaurant(@RequestBody Restaurant loginres) {
 		String resPhoneNo = loginres.getResPhoneNo();
 	    String resPassword = loginres.getResPassword();
@@ -89,6 +91,27 @@ public class RestaurantController {
 	        System.out.println("Restaurant not found");
 	        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 	    }
+	}
+	
+	@GetMapping("/restaurantlists")
+	public ResponseEntity<List<Restaurant>> GetAllRestaurant() {
+		List<Restaurant> restaurants = resser.GetAllRestaurants();
+		if (restaurants.isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(restaurants, HttpStatus.OK);
+	}
+	
+	@GetMapping("/restaurantdtails/{phoneNo}")
+	public ResponseEntity<Restaurant> GetRestaurantsByPhno(@PathVariable("phoneNo") String phoneNo) {
+		String phno = phoneNo.toString();
+		Optional<Restaurant> restaurant = resser.GetResDetailsByPhNo(phno);
+		if(restaurant.isPresent()) {
+			Restaurant res = restaurant.get();
+			return new ResponseEntity<>(res, HttpStatus.OK);
+		}else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
 	}
 }
 
