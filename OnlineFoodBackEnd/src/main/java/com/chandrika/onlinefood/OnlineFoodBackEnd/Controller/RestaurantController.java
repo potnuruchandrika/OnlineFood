@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.chandrika.onlinefood.OnlineFoodBackEnd.Entity.Restaurant;
-import com.chandrika.onlinefood.OnlineFoodBackEnd.Repository.RestaurantRepo;
+import com.chandrika.onlinefood.OnlineFoodBackEnd.Repository.restaurantRepo;
 import com.chandrika.onlinefood.OnlineFoodBackEnd.Service.RestaurantService;
 
 @RestController
@@ -26,7 +26,7 @@ public class RestaurantController {
 	RestaurantService resser;
 	
 	@Autowired
-	RestaurantRepo resrepo;
+	restaurantRepo resrepo;
 	
 	@PostMapping("/registerrestaurant")
 	public ResponseEntity<String> registerUser(@RequestBody Restaurant res)	{
@@ -64,8 +64,34 @@ public class RestaurantController {
 		}else {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Restaurant Details Not Updated");
 		}
+	}
+
+	
+	@PostMapping("/Login")
+	public ResponseEntity<Restaurant> LoginRestaurant(@RequestBody Restaurant loginres) {
+		String resPhoneNo = loginres.getResPhoneNo();
+	    String resPassword = loginres.getResPassword();
+	    Optional<Restaurant> res = resser.GetResDetailsByPhNo(resPhoneNo);
+	    
+	    if (res.isPresent()) {
+	        Restaurant restaurant = res.get();
+	        String storedPassword = restaurant.getResPassword();
+	        
+	        if (resPassword.equals(storedPassword)) {
+	            System.out.println("Login Successful");
+	            
+	            return ResponseEntity.ok(restaurant);
+	        } else {
+	            System.out.println("Incorrect password");
+	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	        }
+	    } else {
+	        System.out.println("Restaurant not found");
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+	    }
+	}
 }
-}
+
 		
 			
 		

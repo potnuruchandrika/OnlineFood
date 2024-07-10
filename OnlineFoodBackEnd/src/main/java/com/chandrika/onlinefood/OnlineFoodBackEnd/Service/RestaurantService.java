@@ -7,13 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.chandrika.onlinefood.OnlineFoodBackEnd.Entity.Restaurant;
-import com.chandrika.onlinefood.OnlineFoodBackEnd.Repository.RestaurantRepo;
+import com.chandrika.onlinefood.OnlineFoodBackEnd.Repository.restaurantRepo;
 
 @Service
 public class RestaurantService {
 	
 	@Autowired
-	RestaurantRepo resrepo;
+	restaurantRepo resrepo;
 	
 	public String RegisterRestaurant(Restaurant restaurant) {
 		resrepo.save(restaurant);
